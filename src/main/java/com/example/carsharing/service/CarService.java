@@ -1,0 +1,79 @@
+package com.example.carsharing.service;
+
+import com.example.carsharing.db.DBConnection;
+import com.example.carsharing.domain.Car;
+import com.example.carsharing.domain.Client;
+import com.example.carsharing.domain.Owner;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CarService {
+
+  public void saveToDB(String model, String price, int ownerId) throws SQLException {
+    Connection connection = DBConnection.getInstance().getConnection();
+    try (PreparedStatement pS = connection.prepareStatement(
+        "INSERT INTO cars (model, price, owner, clients, available) VALUES (?, ?, ?, null, true)")) {
+      pS.setString(1, model);
+      pS.setString(2, price);
+      pS.setInt(3, ownerId);
+      pS.executeUpdate();
+    }
+  }
+
+  public Car findById(int id) {
+    return null;
+  }
+
+  public List<Car> findAll() throws SQLException {
+    Connection connection = DBConnection.getInstance().getConnection();
+    try (PreparedStatement pS = connection.prepareStatement("SELECT * FROM cars");
+        ResultSet resultSet = pS.executeQuery()) {
+      return find(resultSet);
+    }
+  }
+
+  public List<Car> findAvailable() throws SQLException {
+    Connection connection = DBConnection.getInstance().getConnection();
+    try (PreparedStatement pS = connection.prepareStatement(
+        "SELECT * FROM cars WHERE available = true");
+        ResultSet resultSet = pS.executeQuery()) {
+      return find(resultSet);
+    }
+  }
+
+  public List<Car> find(ResultSet resultSet) throws SQLException {
+    List<Car> result = new ArrayList<>();
+    while (resultSet.next()) {
+      int id = resultSet.getInt(1);
+      String model = resultSet.getString(2);
+      int price = resultSet.getInt(3);
+
+      OwnerService ownerService = new OwnerService();
+      int ownerID = resultSet.getInt(4);
+      Owner owner = ownerService.findById(ownerID).orElse(null);
+
+      ClientService clientService = new ClientService();
+      int clientID = resultSet.getInt(5);
+      Client client = clientService.findById(clientID).orElse(null);
+
+      boolean available = resultSet.getBoolean(6);
+
+      result.add(new Car(id, model, price, owner, client, available));
+    }
+    return result;
+  }
+
+  public void makeNotAvailable(int carIndex, int clientIndex) throws SQLException {
+    Connection connection = DBConnection.getInstance().getConnection();
+    try (PreparedStatement pS = connection.prepareStatement(
+        "UPDATE cars SET clients = ?, available = false WHERE id = ?")) {
+      pS.setInt(1, clientIndex);
+      pS.setInt(2, carIndex);
+      pS.executeUpdate();
+    }
+  }
+}

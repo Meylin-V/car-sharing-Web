@@ -11,6 +11,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class OwnerService {
+  private int currentIndex;
+
+  public int getCurrentIndex() {
+    return currentIndex;
+  }
+
+  public void setCurrentIndex(int currentIndex) {
+    this.currentIndex = currentIndex;
+  }
 
   public void saveToDB(String firstName, String lastName, String phone) throws SQLException {
     Connection connection = DBConnection.getInstance().getConnection();

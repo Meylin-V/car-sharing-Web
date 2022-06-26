@@ -12,25 +12,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarService {
+  private int currentIndex;
 
-  public void saveToDB(String model, String price, int ownerId) throws SQLException {
+  public int getCurrentIndex() {
+    return currentIndex;
+  }
+
+  public void setCurrentIndex(int currentIndex) {
+    this.currentIndex = currentIndex;
+  }
+
+  public void saveToDB(String model, int price, int ownerId) throws SQLException {
     Connection connection = DBConnection.getInstance().getConnection();
     try (PreparedStatement pS = connection.prepareStatement(
         "INSERT INTO cars (model, price, owner, clients, available) VALUES (?, ?, ?, null, true)")) {
       pS.setString(1, model);
-      pS.setString(2, price);
+      pS.setInt(2, price);
       pS.setInt(3, ownerId);
       pS.executeUpdate();
     }
   }
 
-  public Car findById(int id) {
-    return null;
-  }
-
   public List<Car> findAll() throws SQLException {
     Connection connection = DBConnection.getInstance().getConnection();
-    try (PreparedStatement pS = connection.prepareStatement("SELECT * FROM cars");
+    try (PreparedStatement pS = connection.prepareStatement("SELECT * FROM cars ORDER BY id");
         ResultSet resultSet = pS.executeQuery()) {
       return find(resultSet);
     }
@@ -73,6 +78,15 @@ public class CarService {
         "UPDATE cars SET clients = ?, available = false WHERE id = ?")) {
       pS.setInt(1, clientIndex);
       pS.setInt(2, carIndex);
+      pS.executeUpdate();
+    }
+  }
+
+  public void makeAvailable(int index) throws SQLException {
+    Connection connection = DBConnection.getInstance().getConnection();
+    try (PreparedStatement pS = connection.prepareStatement(
+        "UPDATE cars SET clients = null, available = true WHERE clients = ?")) {
+      pS.setInt(1, index);
       pS.executeUpdate();
     }
   }

@@ -22,5 +22,10 @@
     <input name= "owner-func" id = "owner-func" type="submit" value="I'm an owner">
 </form>
 
+<br/>
+<form action="manager-func" method="get">
+    <input name= "manager-func" id = "manager-func" type="submit" value="I'm a manager">
+</form>
+
 </body>
 </html>

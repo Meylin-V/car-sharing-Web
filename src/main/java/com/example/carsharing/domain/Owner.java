@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Owner {
+
   private int id;
   private String firstName;
   private String lastName;

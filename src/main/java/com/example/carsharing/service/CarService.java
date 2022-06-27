@@ -34,18 +34,32 @@ public class CarService {
     }
   }
 
-  public List<Car> findAll() throws SQLException {
+  public List<Car> findAll(String mark) throws SQLException {
+    String sql = "SELECT * FROM cars ORDER BY ";
+    if (mark.equals("id")) {
+      sql += "id";
+    } else if (mark.equals("price")) {
+      sql += "price";
+    } else {
+      sql += "available";
+    }
     Connection connection = DBConnection.getInstance().getConnection();
-    try (PreparedStatement pS = connection.prepareStatement("SELECT * FROM cars ORDER BY id");
+    try (PreparedStatement pS = connection.prepareStatement(sql);
         ResultSet resultSet = pS.executeQuery()) {
       return find(resultSet);
     }
   }
 
-  public List<Car> findAvailable() throws SQLException {
+  public List<Car> findAvailable(String mark) throws SQLException {
+    String sql = "SELECT * FROM cars WHERE available = true ORDER BY ";
+    if (mark.equals("id")) {
+      sql += "id";
+    } else {
+      sql += "price";
+    }
     Connection connection = DBConnection.getInstance().getConnection();
     try (PreparedStatement pS = connection.prepareStatement(
-        "SELECT * FROM cars WHERE available = true");
+        sql);
         ResultSet resultSet = pS.executeQuery()) {
       return find(resultSet);
     }

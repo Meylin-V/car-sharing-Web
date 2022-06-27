@@ -21,7 +21,8 @@ import javax.sql.DataSource;
 
 @WebServlet(name = "carSharing", value = {"/client-func", "/owner-func", "/manager-func",
     "/add-owner", "/finish_add_owner", "/all-cars", "/rent-car", "/add-car",
-    "/finish_add_car", "/delete-client", "/finish_client"})
+    "/finish_add_car", "/delete-client", "/finish_client",
+    "/order_id", "/order_price", "/order_id_all", "/order_price_all", "/order_av"})
 public class HelloServlet extends HttpServlet {
 
   private CarService carService;
@@ -47,14 +48,22 @@ public class HelloServlet extends HttpServlet {
       throws IOException, ServletException {
     if (request.getRequestURI().contains("/owner-func")) {
       showOwners(request, response);
-    } else if (request.getRequestURI().contains("/client-func")) {
-      showAvailableCars(request, response);
+    } else if (request.getRequestURI().contains("/client-func") ||
+        request.getRequestURI().contains("/order_id")) {
+      showAvailableCars(request, response, "id");
+    } else if (request.getRequestURI().contains("/order_price")) {
+      showAvailableCars(request, response, "price");
     } else if (request.getRequestURI().contains("/add-owner")) {
       openOwnerPage(request, response);
     } else if (request.getRequestURI().contains("/manager-func")) {
       showClients(request, response);
-    } else if (request.getRequestURI().contains("/all-cars")) {
-      showAllCars(request, response);
+    } else if (request.getRequestURI().contains("/all-cars")
+    || request.getRequestURI().contains("/order_id_all")) {
+      showAllCars(request, response, "id");
+    } else if (request.getRequestURI().contains("/order_price_all")) {
+      showAllCars(request, response, "price");
+    } else if (request.getRequestURI().contains("/order_av")) {
+      showAllCars(request, response, "av");
     } else if (request.getRequestURI().contains("/rent-car")) {
       openClientPage(request, response);
     } else if (request.getRequestURI().contains("/add-car")) {
@@ -107,7 +116,7 @@ public class HelloServlet extends HttpServlet {
     } catch (Exception e) {
       clientBean.setMessage("error input data");
     }
-    showAvailableCars(request, response);
+    showAvailableCars(request, response, "id");
   }
 
   private void deleteClient(HttpServletRequest request, HttpServletResponse response)
@@ -178,10 +187,11 @@ public class HelloServlet extends HttpServlet {
     }
   }
 
-  private void showAvailableCars(HttpServletRequest request, HttpServletResponse response) {
+  private void showAvailableCars(HttpServletRequest request, HttpServletResponse response,
+      String mark) {
     CarBean carBean = new CarBean();
     try {
-      List<Car> carList = carService.findAvailable();
+      List<Car> carList = carService.findAvailable(mark);
       carBean.setCars(carList);
       request.setAttribute("carBean", carBean);
       request.getRequestDispatcher("/view-cars-av.jsp").forward(request, response);
@@ -190,10 +200,10 @@ public class HelloServlet extends HttpServlet {
     }
   }
 
-  private void showAllCars(HttpServletRequest request, HttpServletResponse response) {
+  private void showAllCars(HttpServletRequest request, HttpServletResponse response, String mark) {
     CarBean carBean = new CarBean();
     try {
-      List<Car> carList = carService.findAll();
+      List<Car> carList = carService.findAll(mark);
       carBean.setCars(carList);
       request.setAttribute("carBean", carBean);
       request.getRequestDispatcher("/view-cars-all.jsp").forward(request, response);

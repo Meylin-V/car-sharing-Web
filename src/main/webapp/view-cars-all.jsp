@@ -14,6 +14,15 @@
     <title>All Cars</title>
 </head>
 <body>
+<form action="order_id_all" method="get">
+    <input type="submit" value="Order By ID">
+</form>
+<form action="order_price_all" method="get">
+    <input type="submit" value="Order By Price">
+</form>
+<form action="order_av" method="get">
+    <input type="submit" value="Order By Availability">
+</form>
 <table>
     <thead>
     <tr>

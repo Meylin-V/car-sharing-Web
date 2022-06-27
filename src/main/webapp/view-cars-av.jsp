@@ -14,6 +14,12 @@
     <title>Available Cars</title>
 </head>
 <body>
+<form action="order_id" method="get">
+    <input type="submit" value="Order By ID">
+</form>
+<form action="order_price" method="get">
+    <input type="submit" value="Order By Price">
+</form>
 <table>
     <thead>
     <tr>

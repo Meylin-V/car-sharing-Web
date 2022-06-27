@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CarService {
+
   private int currentIndex;
 
   public int getCurrentIndex() {
@@ -83,11 +84,13 @@ public class CarService {
   }
 
   public void makeAvailable(int index) throws SQLException {
-    Connection connection = DBConnection.getInstance().getConnection();
-    try (PreparedStatement pS = connection.prepareStatement(
-        "UPDATE cars SET clients = null, available = true WHERE clients = ?")) {
-      pS.setInt(1, index);
-      pS.executeUpdate();
+    if (index >= 0) {
+      Connection connection = DBConnection.getInstance().getConnection();
+      try (PreparedStatement pS = connection.prepareStatement(
+          "UPDATE cars SET clients = null, available = true WHERE clients = ?")) {
+        pS.setInt(1, index);
+        pS.executeUpdate();
+      }
     }
   }
 }

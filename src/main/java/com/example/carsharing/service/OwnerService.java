@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class OwnerService {
+
   private int currentIndex;
 
   public int getCurrentIndex() {
@@ -51,7 +52,6 @@ public class OwnerService {
     Connection connection = DBConnection.getInstance().getConnection();
     try (PreparedStatement pS = connection.prepareStatement("SELECT * FROM owners");
         ResultSet resultSet = pS.executeQuery()) {
-
       List<Owner> result = new ArrayList<>();
       while (resultSet.next()) {
         int id = resultSet.getInt(1);

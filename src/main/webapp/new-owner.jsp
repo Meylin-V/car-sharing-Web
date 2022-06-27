@@ -20,7 +20,7 @@
 <body>
 <h1><%= "Please, enter your data" %>
 </h1>
-<form action="finish_add" method="post">
+<form action="finish_add_owner" method="post">
     <label for="first_name">First Name: </label>
     <input id="first_name" type="text" name="first_name" value="${ownerBean.current.firstName}">
     <br/>

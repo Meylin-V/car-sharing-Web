@@ -23,8 +23,9 @@
 </form>
 
 <br/>
+
 <form action="manager-func" method="get">
-    <input name= "manager-func" id = "manager-func" type="submit" value="I'm a manager">
+    <input name= "manager-func" id = "manager-func" type="submit" value="I'm an manager">
 </form>
 
 </body>

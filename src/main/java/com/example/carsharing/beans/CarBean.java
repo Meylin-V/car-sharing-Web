@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class CarBean {
+
   private Car current;
   private String message;
   private List<Car> cars;

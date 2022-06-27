@@ -29,7 +29,6 @@
     <label for="phone">Phone: </label>
     <input id="phone" type="text" name="phone" value="${clientBean.current.phone}">
     <br/>
-
     <input type="submit" value="Add">
 </form>
 </body>

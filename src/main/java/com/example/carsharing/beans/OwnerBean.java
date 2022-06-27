@@ -6,7 +6,8 @@ import lombok.Data;
 
 @Data
 public class OwnerBean {
-private Owner current;
-private String message;
-private List<Owner> owners;
+
+  private Owner current;
+  private String message;
+  private List<Owner> owners;
 }

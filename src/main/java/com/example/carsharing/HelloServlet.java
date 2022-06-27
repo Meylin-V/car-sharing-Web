@@ -19,9 +19,9 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import javax.sql.DataSource;
 
-@WebServlet(name = "carSharing", value = {"/client-func", "/owner-func",
-    "/add-owner", "/finish_add", "/all-cars", "/rent-car", "/add-car",
-    "/finish_add_car", "/finish_client", "/manager-func", "/delete-client"})
+@WebServlet(name = "carSharing", value = {"/client-func", "/owner-func", "/manager-func",
+    "/add-owner", "/finish_add_owner", "/all-cars", "/rent-car", "/add-car",
+    "/finish_add_car", "/delete-client", "/finish_client"})
 public class HelloServlet extends HttpServlet {
 
   private CarService carService;
@@ -35,6 +35,7 @@ public class HelloServlet extends HttpServlet {
     carService = new CarService();
     ownerService = new OwnerService();
     clientService = new ClientService();
+
     try {
       DBConnection.getInstance().initConnection(ds);
     } catch (SQLException e) {
@@ -50,53 +51,32 @@ public class HelloServlet extends HttpServlet {
       showAvailableCars(request, response);
     } else if (request.getRequestURI().contains("/add-owner")) {
       openOwnerPage(request, response);
+    } else if (request.getRequestURI().contains("/manager-func")) {
+      showClients(request, response);
     } else if (request.getRequestURI().contains("/all-cars")) {
       showAllCars(request, response);
-    } else if (request.getRequestURI().contains("/add-car")) {
-      openCarPage(request, response);
     } else if (request.getRequestURI().contains("/rent-car")) {
       openClientPage(request, response);
-    } else if (request.getRequestURI().contains("/manager-func")) {
-      showClients(request,response);
+    } else if (request.getRequestURI().contains("/add-car")) {
+      openCarPage(request, response);
+    } else if (request.getRequestURI().contains("/delete-client")) {
+      try {
+        deleteClient(request, response);
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
     }
   }
 
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-    if (request.getRequestURI().contains("/finish_add")) {
+    if (request.getRequestURI().contains("/finish_add_owner")) {
       addNewOwner(request, response);
     } else if (request.getRequestURI().contains("/finish_client")) {
       rentCar(request, response);
     } else if (request.getRequestURI().contains("/finish_add_car")) {
       addNewCar(request, response);
     }
-  }
-
-  @Override
-  protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
-    if (request.getRequestURI().contains("/delete-client")) {
-      ClientBean clientBean = new ClientBean();
-      try {
-        int index = Integer.parseInt(request.getParameter("id"));
-        clientService.deleteById(index);
-      } catch (Exception e) {
-        clientBean.setMessage("can't delete!");
-      }
-      showClients(request,response);
-    }
-  }
-
-  private void addNewCar(HttpServletRequest request, HttpServletResponse response) {
-    CarBean carBean = new CarBean();
-    try {
-      int indexOwner = ownerService.getCurrentIndex();
-      String model = request.getParameter("model");
-      int price = Integer.parseInt(request.getParameter("price"));
-      carService.saveToDB(model, price, indexOwner);
-    } catch (Exception e) {
-      carBean.setMessage("error input data");
-    }
-    showOwners(request, response);
   }
 
   private void addNewOwner(HttpServletRequest request, HttpServletResponse response) {
@@ -130,12 +110,48 @@ public class HelloServlet extends HttpServlet {
     showAvailableCars(request, response);
   }
 
+  private void deleteClient(HttpServletRequest request, HttpServletResponse response)
+      throws SQLException {
+    int clientIndex = Integer.parseInt(request.getParameter("id"));
+    carService.makeAvailable(clientIndex);
+    clientService.deleteById(clientIndex);
+    showClients(request, response);
+  }
+
+  private void addNewCar(HttpServletRequest request, HttpServletResponse response) {
+    CarBean carBean = new CarBean();
+    try {
+      String model = request.getParameter("model");
+      int price = Integer.parseInt(request.getParameter("price"));
+      int ownerIndex = ownerService.getCurrentIndex();
+      carService.saveToDB(model, price, ownerIndex);
+    } catch (Exception e) {
+      carBean.setMessage("Error input data!");
+    }
+    showOwners(request, response);
+  }
+
+  private void openCarPage(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    CarBean carBean = new CarBean();
+    ownerService.setCurrentIndex(Integer.parseInt(request.getParameter("id")));
+    request.setAttribute("carBean", carBean);
+    request.getRequestDispatcher("/new-car.jsp").forward(request, response);
+  }
+
   private void openClientPage(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     ClientBean clientBean = new ClientBean();
     carService.setCurrentIndex(Integer.parseInt(request.getParameter("id")));
     request.setAttribute("clientBean", clientBean);
     request.getRequestDispatcher("/new-client.jsp").forward(request, response);
+  }
+
+  private void openOwnerPage(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    OwnerBean ownerBean = new OwnerBean();
+    request.setAttribute("ownerBean", ownerBean);
+    request.getRequestDispatcher("/new-owner.jsp").forward(request, response);
   }
 
   private void showClients(HttpServletRequest request, HttpServletResponse response) {
@@ -148,13 +164,6 @@ public class HelloServlet extends HttpServlet {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private void openOwnerPage(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    OwnerBean ownerBean = new OwnerBean();
-    request.setAttribute("ownerBean", ownerBean);
-    request.getRequestDispatcher("/new-owner.jsp").forward(request, response);
   }
 
   private void showOwners(HttpServletRequest request, HttpServletResponse response) {
@@ -191,14 +200,6 @@ public class HelloServlet extends HttpServlet {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private void openCarPage(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-    CarBean carBean = new CarBean();
-    ownerService.setCurrentIndex(Integer.parseInt(request.getParameter("id")));
-    request.setAttribute("carBean", carBean);
-    request.getRequestDispatcher("/new-car.jsp").forward(request, response);
   }
 
   public void destroy() {

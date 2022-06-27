@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <clients id="2" first_name="Danil" last_name="Markov" phone="0573212121"/>
+  <clients id="3" first_name="Mark" last_name="Avrelii" phone="0939393931"/>
+  <clients id="5" first_name="Harry" last_name="Potter" phone="0999999999"/>
+  <clients id="6" first_name="Link" last_name="Dao" phone="0214446677"/>
+  <clients id="11" first_name="Mimi" last_name="Tini" phone="0399311331"/>
+</dataset>

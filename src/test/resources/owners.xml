@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <owners id="1" first_name="Petr" last_name="Petrov" phone="0979711791"/>
+  <owners id="2" first_name="Ivan" last_name="Ivanov" phone="0573212121"/>
+  <owners id="3" first_name="Alex" last_name="Smith" phone="0939393931"/>
+  <owners id="4" first_name="Valentin" last_name="Popov" phone="0667677667"/>
+  <owners id="6" first_name="Liliya" last_name="Parfenova" phone="0333033333"/>
+  <owners id="7" first_name="Maksym" last_name="Maksymov" phone="0535335335"/>
+</dataset>

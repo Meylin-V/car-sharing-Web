@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <cars id="6" model="Ford F-Series" price="135" owner="4" available="true"/>
+  <cars id="8" model="Kia Sportage" price="230" owner="4" available="true"/>
+  <cars id="4" model="Toyota Camry" price="165" owner="3" clients="2" available="false"/>
+  <cars id="1" model="Honda Civic" price="200" owner="1" clients="5" available="false"/>
+  <cars id="5" model="Ram Pick-up" price="250" owner="3" clients="3" available="false"/>
+  <cars id="2" model="Daewoo Lanos" price="55" owner="1" clients="11" available="false"/>
+  <cars id="9" model="Kia Serato" price="210" owner="7" available="true"/>
+</dataset>

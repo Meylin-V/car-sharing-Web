@@ -14,6 +14,7 @@
     <title>All Cars</title>
 </head>
 <body>
+<h1>All Cars</h1>
 <form action="order_id_all" method="get">
     <input type="submit" value="Order By ID">
 </form>

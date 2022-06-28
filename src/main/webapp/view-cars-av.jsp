@@ -14,6 +14,7 @@
     <title>Available Cars</title>
 </head>
 <body>
+<h1>Available Cars</h1>
 <form action="order_id_av" method="get">
     <input type="submit" value="Order By ID">
 </form>

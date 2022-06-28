@@ -80,7 +80,7 @@ public class CarService {
       ClientService clientService = new ClientService();
       int clientID = resultSet.getInt(5);
       Client client = clientService.findById(clientID)
-          .orElseThrow(() -> new IllegalArgumentException("invalid client id"));
+          .orElse(null);
 
       boolean available = resultSet.getBoolean(6);
 

@@ -14,6 +14,7 @@
     <title>Clients</title>
 </head>
 <body>
+<h1>Clients</h1>
 <table>
     <thead>
     <tr>

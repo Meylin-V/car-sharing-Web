@@ -1,38 +1,33 @@
-package com.example.carsharing.tests;
+package com.example.carsharing.tests.carTest;
 
+import com.example.carsharing.tests.PropertyCreator;
 import java.io.FileInputStream;
 
 import org.dbunit.Assertion;
 import org.dbunit.DBTestCase;
-import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.SortedTable;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
-public class CarTest extends DBTestCase {
+public class CarTestAll extends DBTestCase {
 
-  public CarTest() {
+  public CarTestAll() {
     super();
-    System.setProperty(
-        PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, "org.postgresql.Driver");
-    System.setProperty(
-        PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, "jdbc:postgresql://localhost/car_sharing");
-    System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, "postgres");
-    System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, "password");
+    PropertyCreator.setProperties();
   }
 
   @Override
   protected IDataSet getDataSet() throws Exception {
-    return new FlatXmlDataSet(new FileInputStream("src/test/resources/cars.xml"));
+    return new FlatXmlDataSet(new FileInputStream("src/test/resources/carsAll.xml"));
   }
 
   //column "clients" ignored because of for some rows its null
-  public void testIgnoreClients() throws Exception {
+  public void testAllIgnoreClients() throws Exception {
     IDataSet dbDataSet = getConnection().createDataSet();
     ITable dbTable = dbDataSet.getTable("cars");
 
-    IDataSet xmlDataSet = new FlatXmlDataSet(new FileInputStream("src/test/resources/cars.xml"));
+    IDataSet xmlDataSet = new FlatXmlDataSet(new FileInputStream("src/test/resources/carsAll.xml"));
     ITable xmlTable = xmlDataSet.getTable("cars");
 
     SortedTable dbSortedTable = new SortedTable(dbTable, new String[]{"id"});

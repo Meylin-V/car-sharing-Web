@@ -38,16 +38,16 @@ public class ClientService {
     }
   }
 
-  public int getIndex() throws SQLException {
+  public Optional<Object> getIndex() throws SQLException {
     Connection connection = DBConnection.getInstance().getConnection();
     try (PreparedStatement pS = connection.prepareStatement(
         "SELECT id FROM clients ORDER BY id DESC LIMIT 1");
         ResultSet resultSet = pS.executeQuery()) {
       if (resultSet.next()) {
-        return resultSet.getInt(1);
+        return Optional.of(resultSet.getInt(1));
       }
     }
-    return -1;
+    return Optional.empty();
   }
 
   public List<Client> findAll() throws SQLException {

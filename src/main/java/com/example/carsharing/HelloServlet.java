@@ -10,11 +10,9 @@ import com.example.carsharing.domain.Owner;
 import com.example.carsharing.service.CarService;
 import com.example.carsharing.service.ClientService;
 import com.example.carsharing.service.OwnerService;
-import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
 import javax.annotation.Resource;
-import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import javax.sql.DataSource;
@@ -22,7 +20,7 @@ import javax.sql.DataSource;
 @WebServlet(name = "carSharing", value = {"/client-func", "/owner-func", "/manager-func",
     "/add-owner", "/finish_add_owner", "/all-cars", "/rent-car", "/add-car",
     "/finish_add_car", "/delete-client", "/finish_client",
-    "/order_id", "/order_price", "/order_id_all", "/order_price_all", "/order_av"})
+    "/order_id_av", "/order_price_av", "/order_id_all", "/order_price_all", "/order_av"})
 public class HelloServlet extends HttpServlet {
 
   private CarService carService;
@@ -44,21 +42,20 @@ public class HelloServlet extends HttpServlet {
     }
   }
 
-  public void doGet(HttpServletRequest request, HttpServletResponse response)
-      throws IOException, ServletException {
+  public void doGet(HttpServletRequest request, HttpServletResponse response) {
     if (request.getRequestURI().contains("/owner-func")) {
       showOwners(request, response);
     } else if (request.getRequestURI().contains("/client-func") ||
-        request.getRequestURI().contains("/order_id")) {
+        request.getRequestURI().contains("/order_id_av")) {
       showAvailableCars(request, response, "id");
-    } else if (request.getRequestURI().contains("/order_price")) {
+    } else if (request.getRequestURI().contains("/order_price_av")) {
       showAvailableCars(request, response, "price");
     } else if (request.getRequestURI().contains("/add-owner")) {
       openOwnerPage(request, response);
     } else if (request.getRequestURI().contains("/manager-func")) {
       showClients(request, response);
     } else if (request.getRequestURI().contains("/all-cars")
-    || request.getRequestURI().contains("/order_id_all")) {
+        || request.getRequestURI().contains("/order_id_all")) {
       showAllCars(request, response, "id");
     } else if (request.getRequestURI().contains("/order_price_all")) {
       showAllCars(request, response, "price");
@@ -69,11 +66,7 @@ public class HelloServlet extends HttpServlet {
     } else if (request.getRequestURI().contains("/add-car")) {
       openCarPage(request, response);
     } else if (request.getRequestURI().contains("/delete-client")) {
-      try {
-        deleteClient(request, response);
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+      deleteClient(request, response);
     }
   }
 
@@ -88,79 +81,47 @@ public class HelloServlet extends HttpServlet {
     }
   }
 
-  private void addNewOwner(HttpServletRequest request, HttpServletResponse response) {
-    OwnerBean ownerBean = new OwnerBean();
-    try {
-      String firstName = request.getParameter("first_name");
-      String lastName = request.getParameter("last_name");
-      String phone = request.getParameter("phone");
-      ownerService.saveToDB(firstName, lastName, phone);
-    } catch (Exception e) {
-      ownerBean.setMessage("error input data");
-    }
-    showOwners(request, response);
-  }
-
-  private void rentCar(HttpServletRequest request, HttpServletResponse response) {
-    ClientBean clientBean = new ClientBean();
-    try {
-      String firstName = request.getParameter("first_name");
-      String lastName = request.getParameter("last_name");
-      String phone = request.getParameter("phone");
-      clientService.saveToDB(firstName, lastName, phone);
-
-      int clientIndex = clientService.getIndex();
-      int carIndex = carService.getCurrentIndex();
-
-      carService.makeNotAvailable(carIndex, clientIndex);
-    } catch (Exception e) {
-      clientBean.setMessage("error input data");
-    }
-    showAvailableCars(request, response, "id");
-  }
-
-  private void deleteClient(HttpServletRequest request, HttpServletResponse response)
-      throws SQLException {
+  private void deleteClient(HttpServletRequest request, HttpServletResponse response) {
     int clientIndex = Integer.parseInt(request.getParameter("id"));
-    carService.makeAvailable(clientIndex);
-    clientService.deleteById(clientIndex);
+    try {
+      carService.makeAvailable(clientIndex);
+      clientService.deleteById(clientIndex);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
     showClients(request, response);
   }
 
-  private void addNewCar(HttpServletRequest request, HttpServletResponse response) {
-    CarBean carBean = new CarBean();
-    try {
-      String model = request.getParameter("model");
-      int price = Integer.parseInt(request.getParameter("price"));
-      int ownerIndex = ownerService.getCurrentIndex();
-      carService.saveToDB(model, price, ownerIndex);
-    } catch (Exception e) {
-      carBean.setMessage("Error input data!");
-    }
-    showOwners(request, response);
-  }
-
-  private void openCarPage(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  private void openCarPage(HttpServletRequest request, HttpServletResponse response) {
     CarBean carBean = new CarBean();
     ownerService.setCurrentIndex(Integer.parseInt(request.getParameter("id")));
     request.setAttribute("carBean", carBean);
-    request.getRequestDispatcher("/new-car.jsp").forward(request, response);
+    try {
+      request.getRequestDispatcher("/new-car.jsp").forward(request, response);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  private void openClientPage(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  private void openClientPage(HttpServletRequest request, HttpServletResponse response) {
     ClientBean clientBean = new ClientBean();
     carService.setCurrentIndex(Integer.parseInt(request.getParameter("id")));
     request.setAttribute("clientBean", clientBean);
-    request.getRequestDispatcher("/new-client.jsp").forward(request, response);
+    try {
+      request.getRequestDispatcher("/new-client.jsp").forward(request, response);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  private void openOwnerPage(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
+  private void openOwnerPage(HttpServletRequest request, HttpServletResponse response) {
     OwnerBean ownerBean = new OwnerBean();
     request.setAttribute("ownerBean", ownerBean);
-    request.getRequestDispatcher("/new-owner.jsp").forward(request, response);
+    try {
+      request.getRequestDispatcher("/new-owner.jsp").forward(request, response);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void showClients(HttpServletRequest request, HttpServletResponse response) {
@@ -210,6 +171,51 @@ public class HelloServlet extends HttpServlet {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private void addNewOwner(HttpServletRequest request, HttpServletResponse response) {
+    OwnerBean ownerBean = new OwnerBean();
+    try {
+      String firstName = request.getParameter("first_name");
+      String lastName = request.getParameter("last_name");
+      String phone = request.getParameter("phone");
+      ownerService.saveToDB(firstName, lastName, phone);
+    } catch (Exception e) {
+      ownerBean.setMessage("error input data");
+    }
+    showOwners(request, response);
+  }
+
+  private void rentCar(HttpServletRequest request, HttpServletResponse response) {
+    ClientBean clientBean = new ClientBean();
+    try {
+      String firstName = request.getParameter("first_name");
+      String lastName = request.getParameter("last_name");
+      String phone = request.getParameter("phone");
+      clientService.saveToDB(firstName, lastName, phone);
+
+      int clientIndex = (int) clientService.getIndex()
+          .orElseThrow(() -> new IllegalArgumentException("invalid index"));
+      int carIndex = carService.getCurrentIndex();
+
+      carService.makeNotAvailable(carIndex, clientIndex);
+    } catch (Exception e) {
+      clientBean.setMessage("error input data");
+    }
+    showAvailableCars(request, response, "id");
+  }
+
+  private void addNewCar(HttpServletRequest request, HttpServletResponse response) {
+    CarBean carBean = new CarBean();
+    try {
+      String model = request.getParameter("model");
+      int price = Integer.parseInt(request.getParameter("price"));
+      int ownerIndex = ownerService.getCurrentIndex();
+      carService.saveToDB(model, price, ownerIndex);
+    } catch (Exception e) {
+      carBean.setMessage("Error input data for new Car!");
+    }
+    showOwners(request, response);
   }
 
   public void destroy() {

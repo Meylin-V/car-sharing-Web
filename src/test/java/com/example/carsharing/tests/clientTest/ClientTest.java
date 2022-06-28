@@ -1,24 +1,18 @@
-package com.example.carsharing.tests;
+package com.example.carsharing.tests.clientTest;
 
+import com.example.carsharing.tests.PropertyCreator;
 import java.io.FileInputStream;
 import org.dbunit.Assertion;
 import org.dbunit.DBTestCase;
-import org.dbunit.PropertiesBasedJdbcDatabaseTester;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
-import org.dbunit.dataset.SortedTable;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
 public class ClientTest extends DBTestCase {
 
   public ClientTest() {
     super();
-    System.setProperty(
-        PropertiesBasedJdbcDatabaseTester.DBUNIT_DRIVER_CLASS, "org.postgresql.Driver");
-    System.setProperty(
-        PropertiesBasedJdbcDatabaseTester.DBUNIT_CONNECTION_URL, "jdbc:postgresql://localhost/car_sharing");
-    System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_USERNAME, "postgres");
-    System.setProperty(PropertiesBasedJdbcDatabaseTester.DBUNIT_PASSWORD, "password");
+    PropertyCreator.setProperties();
   }
 
   @Override

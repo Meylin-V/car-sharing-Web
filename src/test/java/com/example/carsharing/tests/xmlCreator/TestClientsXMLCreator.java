@@ -8,8 +8,9 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.database.QueryDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
-public class TestClients {
-  public static void main(String[] args) throws Exception{
+public class TestClientsXMLCreator {
+
+  public static void main(String[] args) throws Exception {
     Class.forName("org.postgresql.Driver");
 
     Connection conn = DriverManager.getConnection(
@@ -20,6 +21,6 @@ public class TestClients {
 
     dataSet.addTable("clients");
 
-    FlatXmlDataSet.write(dataSet,new FileOutputStream("src/test/resources/clients.xml"));
+    FlatXmlDataSet.write(dataSet, new FileOutputStream("src/test/resources/clients.xml"));
   }
 }

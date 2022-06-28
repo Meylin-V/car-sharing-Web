@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+  <cars id="10" model="Honda Civic" price="200" owner="1" available="true"/>
+  <cars id="11" model="Daewoo Lanos" price="55" owner="1" available="true"/>
+  <cars id="13" model="Toyota Camry" price="165" owner="3" available="true"/>
+</dataset>

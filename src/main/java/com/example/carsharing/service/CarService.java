@@ -74,11 +74,13 @@ public class CarService {
 
       OwnerService ownerService = new OwnerService();
       int ownerID = resultSet.getInt(4);
-      Owner owner = ownerService.findById(ownerID).orElse(null);
+      Owner owner = ownerService.findById(ownerID)
+          .orElseThrow(() -> new IllegalArgumentException("invalid owner id"));
 
       ClientService clientService = new ClientService();
       int clientID = resultSet.getInt(5);
-      Client client = clientService.findById(clientID).orElse(null);
+      Client client = clientService.findById(clientID)
+          .orElseThrow(() -> new IllegalArgumentException("invalid client id"));
 
       boolean available = resultSet.getBoolean(6);
 
